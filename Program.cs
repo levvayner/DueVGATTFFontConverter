@@ -2,8 +2,6 @@
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Formats;
 using System.Reflection;
 using SixLabors.ImageSharp.Memory;
 // See https://aka.ms/new-console-template for more information
@@ -105,15 +103,16 @@ using (var image = new Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(fontSize,
         for (int idx = 32; idx < 127; idx++)
         {
             imageContext.DrawText(new String((char)idx, 1), font, textBrush, new PointF(0, 0));
-            try
-            {
-                string charFN = ((char)idx == '.') ? "__" : ((char)idx).ToString();
-                image.SaveAsBmp($"Generated-{charFN}.bmp");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to generate bitmap for char {(char)idx}. Error: {ex.Message}");
-            }
+            if (generateBmp)
+                try
+                {
+                    string charFN = ((char)idx == '.') ? "__" : ((char)idx).ToString();
+                    image.SaveAsBmp($"Generated-{charFN}.bmp");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to generate bitmap for char {(char)idx}. Error: {ex.Message}");
+                }
 
             byte[] pixelData = new byte[fontSize * fontSize * 4];
             byte[,] generatedData = new byte[fontSize, fontSize];
@@ -121,7 +120,7 @@ using (var image = new Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(fontSize,
             image.CopyPixelDataTo(letterPixels);
 
 
-            Console.WriteLine($"Writing char {(char)idx}");
+            //Console.WriteLine($"Writing char {(char)idx}");
             for (int pixelIdx = 0; pixelIdx < fontSize * fontSize; pixelIdx++)
             {
                 int col = pixelIdx % fontSize;
@@ -137,8 +136,8 @@ using (var image = new Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(fontSize,
                     generatedData[col, row] = 1;
                     if (maxCol < col)
                         maxCol = col;
-                    
-                    
+
+
                 }
             }
 
@@ -150,7 +149,6 @@ using (var image = new Image<SixLabors.ImageSharp.PixelFormats.Rgba32>(fontSize,
         }
     });
 }
-Console.WriteLine($"Max column: {maxCol}");
 
 //update stride
 stride = (int)Math.Ceiling((decimal)(maxCol+1) / 8);
@@ -203,6 +201,8 @@ using (StreamWriter writer = new StreamWriter(new FileStream(outputFileName, Fil
     writer.WriteLine("#endif");
 
 }
+
+Console.WriteLine($"Generated {outputFileName} with font sourced from {fontName} in {maxCol}x{fontSize} bytes");
 
 
 
