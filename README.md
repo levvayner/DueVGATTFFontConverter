@@ -9,7 +9,11 @@ To use, run from the command line passing a few parameters to achieve your desir
 
 Example:
 `./FontConverter -font ./Fonts/Ubuntu-R.ttf -size 18 -header Font.h -bmp 1`
-`font` parameter will specify the input TTF file to use
-`size` parameter will determine the font size of the generated font
-`header` parameter will specify the file name of the generated header file
-`bmp` parameter will specify if bitmap files of each character should be generated._Default is off_
+
+- `font` parameter will specify the input TTF file to use
+
+- `size` parameter will determine the font size of the generated font
+
+- `header` parameter will specify the file name of the generated header file
+
+- `bmp` parameter will specify if bitmap files of each character should be generated._Default is off_
